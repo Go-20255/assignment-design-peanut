@@ -7,6 +7,12 @@ Our programming assignment is a mini interpreter for a small Lisp-like language.
 This assignment was designed and created by Philip Napoli and Nina Tacheva.
 
 ## Assignment Details
-
+- Token Parsing
+- Math Functionality (addition, subtraction, multiplication, division)
+- Control Flow (if conditions)
+- Procedures (functions)
+- REPL
+- Run a file
+- List operations (maybe)
 
 ## Issues/Limitations
