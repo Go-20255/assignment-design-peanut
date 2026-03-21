@@ -1,34 +1,48 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
-func main() {
-	tests := []string{
-		// good tests
-		"5.4",
-		"name",
-		"(define name #t)",
-		"(a b (c d e))",
-		"(begin (define r 10) (* pi (* r r)))",
-		// bad tests
-		"(()",
-		"())",
-		"(a",
-		"(+ 5 5) (- x -10)",
-	}
+func repl() {
+	reader := bufio.NewReader(os.Stdin)
 
-	for _, test := range tests {
-		fmt.Println(parse(test))
-	}
+	fmt.Println("Beginning REPL. Type \"quit\" to exit.")
 
 	env := get_starting_env()
 
-	parsed, _ := parse("(define x 5)")
-	res, e := eval(parsed, env)
-	fmt.Println(res, e)
-	parsed, _ = parse("(+ x 10.8)")
-	res, e = eval(parsed, env)
-	fmt.Println(res, e)
+	for {
+		input, err := reader.ReadString('\n')
+
+		if input == "quit" {
+			break
+		}
+
+		if err != nil {
+			fmt.Println("Error: failed to capture input")
+			continue
+		}
+
+		parsed, err := parse(input)
+
+		if err != nil {
+			fmt.Printf("Parse error: failed to parse input. %s\n", err)
+			continue
+		}
+
+		evaled, err := eval(parsed, env)
+
+		if err != nil {
+			fmt.Printf("Semantic error: failed to evaluate input. %s\n", err)
+			continue
+		}
+
+		fmt.Println(evaled)
+	}
+}
+
+func main() {
+	repl()
 }
