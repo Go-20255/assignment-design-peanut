@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+)
 
 func add(args List) (any, error) {
 	total := 0.0
@@ -124,6 +127,44 @@ func or(args List) (any, error) {
 	return Bool(false), nil
 }
 
+func not(args List) (any, error) {
+	if len(args) == 0 {
+		return 0, fmt.Errorf("Error: no arguments in not")
+	}
+
+	if len(args) != 1 {
+		return 0, fmt.Errorf("Error: too many arguments in not")
+	}
+
+	val, ok := args[0].(Bool)
+
+	if !ok {
+		return Bool(false), nil
+	}
+
+	return Bool(val == false), nil
+}
+
+func equal(args List) (any, error) {
+	if len(args) == 0 {
+		return 0, fmt.Errorf("Error: no arguments in equal")
+	}
+
+	if len(args) == 1 {
+		return true, nil
+	}
+
+	prev := args[0]
+
+	for _, expr := range args[1:] {
+		if !reflect.DeepEqual(prev, expr) {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
 func get_starting_env() Env {
 	env := Env{}
 	env["+"] = add
@@ -132,6 +173,8 @@ func get_starting_env() Env {
 	env["/"] = div
 	env["and"] = and
 	env["or"] = or
+	env["not"] = not
+	env["eq?"] = equal
 
 	return env
 }
