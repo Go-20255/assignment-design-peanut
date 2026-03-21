@@ -14,6 +14,7 @@ func repl() {
 	env := get_starting_env()
 
 	for {
+		fmt.Print("> ")
 		input, err := reader.ReadString('\n')
 
 		if input == "quit" {
@@ -28,18 +29,20 @@ func repl() {
 		parsed, err := parse(input)
 
 		if err != nil {
-			fmt.Printf("Parse error: failed to parse input. %s\n", err)
+			fmt.Printf("Parse error: failed to parse input.\n%s\n", err)
 			continue
 		}
 
 		evaled, err := eval(parsed, env)
 
 		if err != nil {
-			fmt.Printf("Semantic error: failed to evaluate input. %s\n", err)
+			fmt.Printf("Semantic error: failed to evaluate input.\n%s\n", err)
 			continue
 		}
 
-		fmt.Println(evaled)
+		if evaled != nil {
+			fmt.Println(evaled)
+		}
 	}
 }
 
