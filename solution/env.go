@@ -18,9 +18,86 @@ func add(args List) (any, error) {
 	return Number(total), nil
 }
 
+func mult(args List) (any, error) {
+	total := 1.0
+
+	for _, expr := range args {
+		val, ok := expr.(Number)
+
+		if !ok {
+			return 0, fmt.Errorf("Error: attemtped to multiply non-number")
+		}
+
+		total *= float64(val)
+	}
+
+	return Number(total), nil
+}
+
+func sub(args List) (any, error) {
+	if len(args) == 0 {
+		return 0, fmt.Errorf("Error: no arguments in subtraction")
+	}
+
+	val, ok := args[0].(Number)
+	if !ok {
+		return 0, fmt.Errorf("Error: attemtped to subtract non-number")
+	}
+
+	if len(args) == 1 {
+		return Number(-val), nil
+	}
+
+	total := val
+
+	for _, expr := range args[1:] {
+		val, ok := expr.(Number)
+
+		if !ok {
+			return 0, fmt.Errorf("Error: attemtped to subtract non-number")
+		}
+
+		total -= val
+	}
+
+	return total, nil
+}
+
+func div(args List) (any, error) {
+	if len(args) == 0 {
+		return 0, fmt.Errorf("Error: no arguments in division")
+	}
+
+	val, ok := args[0].(Number)
+	if !ok {
+		return 0, fmt.Errorf("Error: attemtped to divide non-number")
+	}
+
+	if len(args) == 1 {
+		return 1 / val, nil
+	}
+
+	total := val
+
+	for _, expr := range args[1:] {
+		val, ok := expr.(Number)
+
+		if !ok {
+			return 0, fmt.Errorf("Error: attemtped to divide non-number")
+		}
+
+		total /= val
+	}
+
+	return total, nil
+}
+
 func get_starting_env() Env {
 	env := Env{}
 	env["+"] = add
+	env["*"] = mult
+	env["-"] = sub
+	env["/"] = div
 
 	return env
 }
