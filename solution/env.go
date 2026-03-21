@@ -92,12 +92,46 @@ func div(args List) (any, error) {
 	return total, nil
 }
 
+func and(args List) (any, error) {
+	for _, expr := range args {
+		val, ok := expr.(Bool)
+
+		if !ok {
+			continue
+		}
+
+		if val == false {
+			return Bool(false), nil
+		}
+	}
+
+	return Bool(true), nil
+}
+
+func or(args List) (any, error) {
+	for _, expr := range args {
+		val, ok := expr.(Bool)
+
+		if !ok {
+			continue
+		}
+
+		if val == true {
+			return Bool(true), nil
+		}
+	}
+
+	return Bool(false), nil
+}
+
 func get_starting_env() Env {
 	env := Env{}
 	env["+"] = add
 	env["*"] = mult
 	env["-"] = sub
 	env["/"] = div
+	env["and"] = and
+	env["or"] = or
 
 	return env
 }
