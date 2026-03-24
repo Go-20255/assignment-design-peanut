@@ -45,56 +45,58 @@ func repl(env Env) {
 }
 
 func file(filename string, env Env) error {
-	program, err := os.Open(filename)
+		fmt.Println("DEBUG: Entered file() function")
+		os.Stdout.Sync()
+	       content, err := os.ReadFile(filename)
+	       if err != nil {
+		       return fmt.Errorf("Failed to open file: %s", err)
+	       }
+		fmt.Printf("DEBUG: file content = %q\n", string(content))
+		os.Stdout.Sync()
 
-	if err != nil {
-		return fmt.Errorf("Failed to open file: %s", err)
-	}
-
-	scanner := bufio.NewScanner(program)
-
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		if line == "" {
-			continue
-		}
-
-		parsed, err := parse(line)
-
-		if err != nil {
-			return fmt.Errorf("Parse error: failed to parse input.\n%s\n", err)
-		}
-
-		evaled, err := eval(parsed, env)
-
-		if err != nil {
-			return fmt.Errorf("Semantic error: failed to evaluate input.\n%s\n", err)
-		}
-
-		if evaled != nil {
-			fmt.Println(evaled)
-		}
-	}
-
-	program.Close()
-
-	return nil
+	       tokens := tokenize(string(content))
+		fmt.Printf("DEBUG: tokens = %#v\n", tokens)
+		os.Stdout.Sync()
+	       idx := 0
+	       for idx < len(tokens) {
+		       parsed, err := parse_tokens(tokens, &idx)
+			   fmt.Printf("DEBUG: idx = %d, len(tokens) = %d\n", idx, len(tokens))
+			   os.Stdout.Sync()
+		       if err != nil {
+			       return fmt.Errorf("Parse error: failed to parse input.\n%s\n", err)
+		       }
+		       evaled, err := eval(parsed, env)
+		       if err != nil {
+			       return fmt.Errorf("Semantic error: failed to evaluate input.\n%s\n", err)
+		       }
+		       if evaled != nil {
+			       fmt.Println(evaled)
+		       }
+	       }
+	       return nil
 }
 
 func main() {
-	env := get_starting_env()
+		f, _ := os.Create("debug_main.txt")
+		f.WriteString("DEBUG: main() entered\n")
+		f.Close()
+		env := get_starting_env()
+		fmt.Printf("DEBUG: os.Args = %#v\n", os.Args)
+		os.Stdout.Sync()
+	       if len(os.Args) > 1 {
+		       fmt.Println("DEBUG: Entering file() branch in main")
+		       os.Stdout.Sync()
+		       filename := os.Args[1]
+		       err := file(filename, env)
 
-	if len(os.Args) > 1 {
-		filename := os.Args[1]
-		err := file(filename, env)
-
-		if err != nil {
-			fmt.Printf("Error encountered while running file.\n%s\n", err)
-			return
-		}
-	} else {
-		repl(env)
-	}
+		       if err != nil {
+			       fmt.Printf("Error encountered while running file.\n%s\n", err)
+			       return
+		       }
+	       } else {
+		       fmt.Println("DEBUG: Entering repl() branch in main")
+		       os.Stdout.Sync()
+		       repl(env)
+	       }
 
 }

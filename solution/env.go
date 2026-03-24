@@ -151,18 +151,18 @@ func equal(args List) (any, error) {
 	}
 
 	if len(args) == 1 {
-		return true, nil
+		return Bool(true), nil
 	}
 
 	prev := args[0]
 
 	for _, expr := range args[1:] {
 		if !reflect.DeepEqual(prev, expr) {
-			return false, nil
+			return Bool(false), nil
 		}
 	}
 
-	return true, nil
+	return Bool(true), nil
 }
 
 func get_starting_env() Env {
