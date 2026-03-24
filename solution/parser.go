@@ -25,13 +25,13 @@ func parse(chars string) (Expr, error) {
 }
 
 func parse_tokens(tokens []string, idx *int) (Expr, error) {
-	       if *idx >= len(tokens) {
-		       return nil, fmt.Errorf("Encountered EOF early")
-	       }
+	if *idx >= len(tokens) {
+		return nil, fmt.Errorf("Encountered EOF early")
+	}
 
-	       fmt.Printf("DEBUG: parse_tokens idx=%d token=%#v\n", *idx, tokens[*idx])
-	       curr := tokens[*idx]
-	       *idx += 1
+	fmt.Printf("DEBUG: parse_tokens idx=%d token=%#v\n", *idx, tokens[*idx])
+	curr := tokens[*idx]
+	*idx += 1
 
 	switch curr {
 	case "(":
