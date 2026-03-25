@@ -29,7 +29,6 @@ func parse_tokens(tokens []string, idx *int) (Expr, error) {
 		return nil, fmt.Errorf("Encountered EOF early")
 	}
 
-	fmt.Printf("DEBUG: parse_tokens idx=%d token=%#v\n", *idx, tokens[*idx])
 	curr := tokens[*idx]
 	*idx += 1
 

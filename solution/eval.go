@@ -47,6 +47,28 @@ func eval(expr Expr, env Env) (any, error) {
 				} else {
 					return eval(val[3], env)
 				}
+			case "lambda":
+				if len(val) != 3 {
+					return nil, fmt.Errorf("Error: 'lambda' expects 2 arguments (parameters, body)")
+				}
+				paramList, ok := val[1].(List)
+				if !ok {
+					return nil, fmt.Errorf("Error: lambda parameters must be a list")
+				}
+				params := []Symbol{}
+				for _, param := range paramList {
+					sym, ok := param.(Symbol)
+					if !ok {
+						return nil, fmt.Errorf("Error: lambda parameters must be symbols")
+					}
+					params = append(params, sym)
+				}
+				// Capture the current environment
+				capturedEnv := Env{}
+				for k, v := range env {
+					capturedEnv[k] = v
+				}
+				return Lambda{params: params, body: val[2], env: capturedEnv}, nil
 			}
 		}
 

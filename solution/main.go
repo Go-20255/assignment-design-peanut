@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func repl(env Env) {
@@ -45,47 +46,43 @@ func repl(env Env) {
 }
 
 func file(filename string, env Env) error {
-	fmt.Println("DEBUG: Entered file() function")
-	os.Stdout.Sync()
 	content, err := os.ReadFile(filename)
 	if err != nil {
 		return fmt.Errorf("Failed to open file: %s", err)
 	}
-	fmt.Printf("DEBUG: file content = %q\n", string(content))
-	os.Stdout.Sync()
 
-	tokens := tokenize(string(content))
-	fmt.Printf("DEBUG: tokens = %#v\n", tokens)
-	os.Stdout.Sync()
-	idx := 0
-	for idx < len(tokens) {
-		parsed, err := parse_tokens(tokens, &idx)
-		fmt.Printf("DEBUG: idx = %d, len(tokens) = %d\n", idx, len(tokens))
-		os.Stdout.Sync()
+	lines := strings.Split(strings.TrimSpace(string(content)), "\n")
+	allTokens := tokenize(string(content))
+	tokenIdx := 0
+	
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		
+		// Parse one complete expression from the line
+		expr, err := parse_tokens(allTokens, &tokenIdx)
 		if err != nil {
 			return fmt.Errorf("Parse error: failed to parse input.\n%s\n", err)
 		}
-		evaled, err := eval(parsed, env)
+		
+		fmt.Printf("Input: %s\n", line)
+		
+		evaled, err := eval(expr, env)
 		if err != nil {
 			return fmt.Errorf("Semantic error: failed to evaluate input.\n%s\n", err)
 		}
 		if evaled != nil {
-			fmt.Println(evaled)
+			fmt.Printf("Output: %v\n", evaled)
 		}
 	}
 	return nil
 }
 
 func main() {
-	f, _ := os.Create("debug_main.txt")
-	f.WriteString("DEBUG: main() entered\n")
-	f.Close()
 	env := get_starting_env()
-	fmt.Printf("DEBUG: os.Args = %#v\n", os.Args)
-	os.Stdout.Sync()
 	if len(os.Args) > 1 {
-		fmt.Println("DEBUG: Entering file() branch in main")
-		os.Stdout.Sync()
 		filename := os.Args[1]
 		err := file(filename, env)
 
@@ -94,8 +91,6 @@ func main() {
 			return
 		}
 	} else {
-		fmt.Println("DEBUG: Entering repl() branch in main")
-		os.Stdout.Sync()
 		repl(env)
 	}
 
