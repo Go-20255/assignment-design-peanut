@@ -54,21 +54,21 @@ func file(filename string, env Env) error {
 	lines := strings.Split(strings.TrimSpace(string(content)), "\n")
 	allTokens := tokenize(string(content))
 	tokenIdx := 0
-	
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
-		
+
 		// Parse one complete expression from the line
 		expr, err := parse_tokens(allTokens, &tokenIdx)
 		if err != nil {
 			return fmt.Errorf("Parse error: failed to parse input.\n%s\n", err)
 		}
-		
+
 		fmt.Printf("Input: %s\n", line)
-		
+
 		evaled, err := eval(expr, env)
 		if err != nil {
 			return fmt.Errorf("Semantic error: failed to evaluate input.\n%s\n", err)
