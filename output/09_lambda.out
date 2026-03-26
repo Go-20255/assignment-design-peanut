@@ -1,3 +1,0 @@
-Input: (define inc (lambda (x) (+ x 1)))
-Input: (inc 5)
-Output: 6
