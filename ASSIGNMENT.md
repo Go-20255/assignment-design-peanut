@@ -4,8 +4,6 @@
 
 `Due date: One Week from Release`
 
-<img src="./images/lisp-gopher.png" width="250">
-
 ---
 
 ## 1. Overview
@@ -270,97 +268,18 @@ Must implement:
 
 ---
 
-## 5. Testing
-
-### 5.1 Running Tests
-
-```bash
-# Build and run all tests
-./run.sh
-
-# Build only
-make build
-
-# Clean build artifacts
-make clean
-```
-
-### 5.2 Test Cases
-
-10 test cases are provided in `input/`, from simple arithmetic to advanced lambdas:
-
-| Test | File | Concept | Example |
-|------|------|---------|---------|
-| 1 | `01_arithmetic.lspgo` | Basic `+` | `(+ 1 2)` → `3` |
-| 2 | `02_subtraction.lspgo` | Basic `-` | `(- 10 3)` → `7` |
-| 3 | `03_multiplication.lspgo` | Basic `*` | `(* 4 5)` → `20` |
-| 4 | `04_division.lspgo` | Basic `/` | `(/ 20 4)` → `5` |
-| 5 | `05_define.lspgo` | Variables | `(define x 7)` then `x` → `7` |
-| 6 | `06_if_true.lspgo` | Conditional (true) | `(if #t 1 2)` → `1` |
-| 7 | `07_if_false.lspgo` | Conditional (false) | `(if #f 1 2)` → `2` |
-| 8 | `08_eq.lspgo` | Equality | `(eq? 3 3)` → `true` |
-| 9 | `09_lambda.lspgo` | Simple lambda | Define and call `inc` function |
-| 10 | `10_lambda2.lspgo` | Multi-param lambda | Define and call `add` function |
-
-Expected output for each test is in `output/`.
-
-### 5.3 Comparing Your Output
-
-```bash
-# After running tests, compare with expected:
-diff output/01_arithmetic.out output_saved/01_arithmetic.out
-```
-
----
-
 ## 6. Rubric
 
 Total Points: **100**
 
-### Code Quality & Implementation (60 points)
-
-| Component | Points | Criteria |
-|-----------|--------|----------|
-| **Parser** | 15 | <ul><li>✓ Tokenization correctly splits input (3 pts)</li><li>✓ Handles parentheses and nesting (5 pts)</li><li>✓ Parses numbers, booleans, symbols correctly (7 pts)</li></ul> |
-| **Evaluator - Basics** | 20 | <ul><li>✓ Symbol lookup works (4 pts)</li><li>✓ Numbers and booleans are self-evaluating (2 pts)</li><li>✓ Arithmetic operators `+`, `-`, `*`, `/` work (6 pts)</li><li>✓ Comparison operator `eq?` works (3 pts)</li><li>✓ Error handling for undefined symbols (5 pts)</li></ul> |
-| **Evaluator - Special Forms** | 15 | <ul><li>✓ `define` creates variable bindings (5 pts)</li><li>✓ `if` evaluates conditionals correctly (5 pts)</li><li>✓ `lambda` creates function objects (5 pts)</li></ul> |
-| **Evaluator - Advanced** | 10 | <ul><li>✓ Lambda functions can be called with arguments (5 pts)</li><li>✓ Closures capture the correct environment (5 pts)</li></ul> |
-
-### Functional Requirements (25 points)
-
-| Test Case | Points | Status |
-|-----------|--------|--------|
-| Tests 1-4 (Arithmetic) | 4 | ✓/✗ |
-| Tests 5-7 (Variables & Conditionals) | 4 | ✓/✗ |
-| Test 8 (Equality) | 4 | ✓/✗ |
-| Tests 9-10 (Lambdas) | 13 | ✓/✗ |
-
-### Code Style & Documentation (10 points)
-
-| Criterion | Points |
-|-----------|--------|
-| Readable variable names & comments | 3 |
-| Proper error messages | 3 |
-| No unnecessary complexity | 2 |
-| REPL mode works correctly | 2 |
-
-### Bonus (up to 5 points)
-
-- **+2**: REPL mode is fully functional and user-friendly
-- **+1**: Handle edge cases gracefully (e.g., dividing by zero, empty lists)
-- **+1**: Implement additional operators (e.g., `>`, `<`, `and`, `or`)
-- **+1**: Add support for `list` and `car`/`cdr` operations
-
----
-
-## 7. Common Mistakes to Avoid
-
-1. **Forgetting to capture the environment in lambdas**: Lambdas must store `env` at creation time
-2. **Modifying the global environment instead of a local copy**: When calling functions, use a new environment
-3. **Not handling recursive expressions**: `(+ 1 (+ 2 3))` should work—evaluate arguments recursively
-4. **Parser off-by-one errors**: Use pointers to `idx` carefully; increment **after** using the token
-5. **Type assertion panics**: Use `ok` pattern, not bare assertions
-6. **Forgetting to handle all cases**: Switch statements should cover all `expr.(type)` possibilities
+| Category | Points | Breakdown |
+|----------|--------|-----------|
+| **Parser Implementation** | 15 | Tokenization (5), parsing nested lists (5), number/boolean/symbol parsing (5) |
+| **Basic Evaluation** | 25 | Symbol lookup (5), self-evaluating literals (5), arithmetic operators (10), `eq?` operator (5) |
+| **Special Forms** | 20 | `define` (7), `if` (7), `lambda` (6) |
+| **Function Calls & Closures** | 15 | Calling functions with args (8), environment capture (7) |
+| **All Tests Pass** | 20 | Tests 1-10 must execute correctly |
+| **Code Style & Clarity** | 5 | Clear naming, helpful error messages, readable code |
 
 ---
 
@@ -382,23 +301,4 @@ Total Points: **100**
 - [Go Type Assertions](https://go.dev/tour/methods/15)
 - [Go Interfaces](https://go.dev/tour/methods/9)
 - [Recursive Descent Parsing](https://en.wikipedia.org/wiki/Recursive_descent_parser)
-
----
-
-## 10. FAQ
-
-**Q: Can I use reflection?**
-A: You can, but it's overkill. Type assertions and switches are simpler.
-
-**Q: How do I debug my parser?**
-A: Print tokenized output, then recursively print the parsed AST structure.
-
-**Q: Do I need to handle all edge cases?**
-A: No, but the 10 provided tests should all pass.
-
-**Q: Will the solution work with the Go Playground?**
-A: Yes, REPL mode will. File mode requires `os` package, which isn't available on playground.
-
-**Q: Is this your first time writing an interpreter?**
-A: That's okay! You've got this. Start small, test frequently, and celebrate when test 1 passes. 🎉
 

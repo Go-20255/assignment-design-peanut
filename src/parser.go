@@ -27,28 +27,9 @@ func parse(chars string) (Expr, error) {
 }
 
 // TODO: Implement parse_tokens()
-// This is the core recursive parsing function.
-// It takes a slice of tokens and a pointer to the current index.
-// It should:
-//
-//  1. Check if idx is out of bounds -> return error
-//  2. Get the current token at tokens[*idx] and increment *idx
-//  3. Handle three cases:
-//     a) Token is "(" -> parse a list
-//     - Create an empty List
-//     - Loop while idx < len(tokens) and tokens[*idx] != ")"
-//     - Recursively call parse_tokens to parse each element
-//     - Append each parsed element to the list
-//     - Check if we hit EOF (remaining ")" not found) -> error
-//     - Increment idx past the ")"
-//     - Return the list
-//     b) Token is ")" -> return error (unexpected ")")
-//     c) Token is something else -> parse it as a literal
-//     - Try parsing as a float using strconv.ParseFloat()
-//     - If that works, return Number(val)
-//     - Otherwise, check if it's "#t" or "#f"
-//     - If so, return Bool(true/false)
-//     - Otherwise, return Symbol(token)
+// This is the core recursive parsing function that converts a token stream into an AST.
+// Handle different token types (parentheses, literals, symbols) appropriately.
+// See ASSIGNMENT.md section 4.2 and 4.3 for guidance.
 func parse_tokens(tokens []string, idx *int) (Expr, error) {
 	// YOUR CODE HERE
 	return nil, fmt.Errorf("parse_tokens not implemented")
