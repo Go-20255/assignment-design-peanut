@@ -1,0 +1,2 @@
+Input: (eq? 3 3)
+Output: true

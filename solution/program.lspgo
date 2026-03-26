@@ -1,5 +1,0 @@
-(define x 10)
-(define y 6)
-(define z (+ x y))
-
-(* z 4)
